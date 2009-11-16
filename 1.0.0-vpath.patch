@@ -1,0 +1,87 @@
+Also adds LIBINTL as needed
+
+--- origsrc/tigervnc-1.0.0/common/os/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/common/os/Makefile.am	2009-11-15 04:14:29.096979300 -0600
+@@ -2,4 +2,5 @@ noinst_LTLIBRARIES = libos.la
+ 
+ HDRS = net.h print.h
+ 
++libos_la_CFLAGS = -I$(top_srcdir)
+ libos_la_SOURCES = $(HDRS) print.c net.c
+--- origsrc/tigervnc-1.0.0/unix/vncconfig/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/unix/vncconfig/Makefile.am	2009-11-15 04:14:29.104979800 -0600
+@@ -9,8 +9,8 @@ vncconfig_SOURCES = $(HDRS) vncExt.c vnc
+ 
+ vncconfig_CPPFLAGS = -I$(COMMON_DIR) -I$(top_srcdir)/tx @X_CFLAGS@ # X_CFLAGS are really CPPFLAGS
+ 
+-vncconfig_LDADD = $(top_srcdir)/tx/libtx.la $(COMMON_DIR)/rfb/librfb.la \
+-	$(COMMON_DIR)/network/libnetwork.la $(COMMON_DIR)/rdr/librdr.la \
++vncconfig_LDADD = $(top_builddir)/tx/libtx.la $(top_builddir)/../common/rfb/librfb.la \
++	$(top_builddir)/../common/network/libnetwork.la $(top_builddir)/../common/rdr/librdr.la \
+ 	@X_PRE_LIBS@ @X_LIBS@ -lX11 -lXext @X_EXTRA_LIBS@
+ 
+ EXTRA_DIST = vncconfig.man
+--- origsrc/tigervnc-1.0.0/unix/vncpasswd/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/unix/vncpasswd/Makefile.am	2009-11-15 04:14:29.108980000 -0600
+@@ -6,6 +6,6 @@ vncpasswd_SOURCES = vncpasswd.cxx
+ 
+ vncpasswd_CPPFLAGS = -I$(COMMON_DIR)
+ 
+-vncpasswd_LDADD = $(COMMON_DIR)/rfb/librfb.la $(COMMON_DIR)/rdr/librdr.la
++vncpasswd_LDADD = $(top_builddir)/../common/rfb/librfb.la $(top_builddir)/../common/rdr/librdr.la
+ 
+ EXTRA_DIST = vncpasswd.man
+--- origsrc/tigervnc-1.0.0/unix/vncviewer/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/unix/vncviewer/Makefile.am	2009-11-15 04:14:29.112980300 -0600
+@@ -11,8 +11,8 @@ vncviewer_SOURCES = $(HDRS) DesktopWindo
+ vncviewer_CPPFLAGS = -I$(COMMON_DIR) -I$(top_srcdir) -I$(top_srcdir)/tx \
+ 	-I$(top_srcdir)/intl -DLOCALEDIR=\"$(localedir)\" @X_CFLAGS@ # X_CFLAGS are really CPPFLAGS
+ 
+-vncviewer_LDADD = $(top_srcdir)/tx/libtx.la $(COMMON_DIR)/rfb/librfb.la \
+-	$(COMMON_DIR)/network/libnetwork.la $(COMMON_DIR)/rdr/librdr.la \
+-	@X_PRE_LIBS@ @X_LIBS@ -lXext -lX11 @X_EXTRA_LIBS@ # @LIBINTL@
++vncviewer_LDADD = $(top_builddir)/tx/libtx.la $(top_builddir)/../common/rfb/librfb.la \
++	$(top_builddir)/../common/network/libnetwork.la $(top_builddir)/../common/rdr/librdr.la \
++	@X_PRE_LIBS@ @X_LIBS@ -lXext -lX11 @X_EXTRA_LIBS@ @LIBINTL@
+ 
+ EXTRA_DIST = vncviewer.man
+--- origsrc/tigervnc-1.0.0/unix/x0vncserver/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/unix/x0vncserver/Makefile.am	2009-11-15 04:14:29.116980500 -0600
+@@ -14,9 +14,9 @@ x0vncserver_CPPFLAGS = -I$(COMMON_DIR) -
+ 	-I$(top_srcdir)/vncconfig @XTEST_DEFINE@ @READDISPLAY_DEFINE@ \
+ 	@MITSHM_DEFINE@ @X_CFLAGS@
+ 
+-x0vncserver_LDADD = $(COMMON_DIR)/rfb/librfb.la \
+-	$(COMMON_DIR)/network/libnetwork.la $(COMMON_DIR)/rdr/librdr.la \
+-	$(top_srcdir)/tx/libtx.la @INET_LIB@ @X_PRE_LIBS@ @X_LIBS@ \
++x0vncserver_LDADD = $(top_builddir)/../common/rfb/librfb.la \
++	$(top_builddir)/../common/network/libnetwork.la $(top_builddir)/../common/rdr/librdr.la \
++	$(top_builddir)/tx/libtx.la @INET_LIB@ @X_PRE_LIBS@ @X_LIBS@ \
+ 	@XTEST_LIB@ -lXext -lX11 @X_EXTRA_LIBS@
+ 
+ EXTRA_DIST = x0vncserver.man
+--- origsrc/tigervnc-1.0.0/unix/xserver/hw/vnc/Makefile.am	2009-11-15 03:52:15.136523900 -0600
++++ src/tigervnc-1.0.0/unix/xserver/hw/vnc/Makefile.am	2009-11-15 04:14:29.121980800 -0600
+@@ -1,10 +1,10 @@
+ LIB_DIR=$(top_srcdir)/../../common
+ BIN_DIR=$(top_srcdir)/..
+ 
+-RFB_LIB=$(LIB_DIR)/rfb/librfb.la
+-RDR_LIB=$(LIB_DIR)/rdr/librdr.la
+-NETWORK_LIB=$(LIB_DIR)/network/libnetwork.la
+-XREGION_LIB=$(LIB_DIR)/Xregion/libXregion.la
++RFB_LIB=$(top_builddir)/../../common/rfb/librfb.la
++RDR_LIB=$(top_builddir)/../../common/rdr/librdr.la
++NETWORK_LIB=$(top_builddir)/../../common/network/libnetwork.la
++XREGION_LIB=$(top_builddir)/../../common/Xregion/libXregion.la
+ COMMON_LIBS=$(NETWORK_LIB) $(RFB_LIB) $(RDR_LIB) $(XREGION_LIB)
+ 
+ noinst_LTLIBRARIES = libvnccommon.la
+@@ -15,6 +15,7 @@ libvnccommon_la_SOURCES = $(HDRS) vncExt
+ 
+ libvnccommon_la_CPPFLAGS = -DVENDOR_RELEASE="$(VENDOR_RELEASE)" \
+ 	-DVENDOR_STRING="\"$(VENDOR_STRING)\"" -I$(LIB_DIR) \
++	-I$(top_srcdir)/include \
+ 	-I$(BIN_DIR)/vncconfig $(XVNC_CPPFLAGS) -I$(includedir)/pixman-1 -I$(includedir)
+ 
+ bin_PROGRAMS = Xvnc

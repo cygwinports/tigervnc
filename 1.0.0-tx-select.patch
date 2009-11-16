@@ -1,0 +1,10 @@
+--- origsrc/tigervnc-1.0.0/unix/tx/TXDialog.h	2009-08-20 04:46:42.000000000 -0500
++++ src/tigervnc-1.0.0/unix/tx/TXDialog.h	2009-11-15 04:14:29.100979600 -0600
+@@ -30,6 +30,7 @@
+ 
+ #include "TXWindow.h"
+ #include <errno.h>
++#include <sys/select.h>
+ 
+ // XXX Lynx/OS 2.3: protos for bzero(), select()
+ #ifdef Lynx

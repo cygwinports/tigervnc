@@ -1,0 +1,44 @@
+Index: xorg-server-1.6.0/xserver/os/access.c
+===================================================================
+--- xorg-server-1.6.0.orig/unix/xserver/os/access.c	2009-02-25 19:12:13.000000000 +0000
++++ xorg-server-1.6.0/unix/xserver/os/access.c	2009-06-29 11:22:03.781250000 +0100
+@@ -812,7 +812,8 @@ DefineSelf (int fd)
+ 		continue;
+ #endif
+ 	    if ((ifr->ifa_flags & IFF_BROADCAST) &&
+-		(ifr->ifa_flags & IFF_UP))
++		(ifr->ifa_flags & IFF_UP) &&
++                ifr->ifa_broadaddr)
+ 		broad_addr = *ifr->ifa_broadaddr;
+ 	    else
+ 		continue;
+Index: xorg-server-1.5.1/xserver/os/utils.c
+===================================================================
+--- xorg-server-1.5.1.orig/unix/xserver/os/utils.c
++++ xorg-server-1.5.1/unix/xserver/os/utils.c
+@@ -56,6 +56,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
+ #ifdef __CYGWIN__
+ #include <stdlib.h>
+ #include <signal.h>
++__stdcall unsigned long GetTickCount(void);
+ #endif
+ 
+ #if defined(WIN32) && !defined(__CYGWIN__)
+@@ -517,7 +518,7 @@ GiveUp(int sig)
+     errno = olderrno;
+ }
+ 
+-#if defined WIN32 && defined __MINGW32__
++#if (defined WIN32 && defined __MINGW32__) || defined(__CYGWIN__)
+ _X_EXPORT CARD32
+ GetTimeInMillis (void)
+ {
+@@ -1504,7 +1504,7 @@ XNFstrdup(const char *s)
+ 
+ #ifdef SMART_SCHEDULE
+ 
+-#ifdef SIGVTALRM
++#if defined(SIGVTALRM) && !defined(__CYGWIN__)
+ #define SMART_SCHEDULE_POSSIBLE
+ #endif
+ 

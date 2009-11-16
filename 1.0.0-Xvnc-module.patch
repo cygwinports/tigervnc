@@ -1,0 +1,20 @@
+--- tigervnc-1.0.0.orig/unix/xserver/hw/vnc/Makefile.am	2009-08-20 04:46:42.000000000 -0500
++++ tigervnc-1.0.0/unix/xserver/hw/vnc/Makefile.am	2009-11-14 23:20:58.200523600 -0600
+@@ -37,6 +37,8 @@ Xvnc_LDADD = $(XVNC_LIBS) libvnccommon.l
+ 
+ Xvnc_LDFLAGS = $(LD_EXPORT_SYMBOLS_FLAG)
+ 
++if XORG
++
+ libvnc_la_LTLIBRARIES = libvnc.la
+ libvnc_ladir = $(moduledir)/extensions
+ 
+@@ -52,6 +54,8 @@ libvnc_la_LDFLAGS = -module -avoid-versi
+ 
+ libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS)
+ 
++endif XORG
++
+ EXTRA_DIST = Xvnc.man
+ 
+ # C++ hacks
