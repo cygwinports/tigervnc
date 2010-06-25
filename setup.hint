@@ -1,5 +1,5 @@
 category: X11
-requires: libbz2_1 libfontenc1 libfreetype6 libgcc1 libGL1 libjpeg7 libpixman1_0 libstdc++6 libX11_6 libXau6 libXdmcp6 libXtst6 perl openssl util-linux xauth xcursor-themes xinit xorg-server zlib0
+requires: libbz2_1 libfontenc1 libfreetype6 libgcc1 libGL1 libjpeg7 libpixman1_0 libstdc++6 libX11_6 libXau6 libXdmcp6 libXtst6 perl libopenssl098 util-linux xauth xcursor-themes xinit xorg-server zlib0
 sdesc: "X11 VNC client and server"
 ldesc: "TigerVNC is an advanced VNC implementation. It is based on the 
 fourth generation of VNC. TigerVNC also includes features from the 
