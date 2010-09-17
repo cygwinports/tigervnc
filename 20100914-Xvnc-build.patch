@@ -1,0 +1,40 @@
+--- origsrc/tigervnc/unix/xserver/hw/vnc/Makefile.am	2010-09-16 21:39:32.644003800 -0500
++++ src/tigervnc/unix/xserver/hw/vnc/Makefile.am	2010-09-16 23:50:52.841579900 -0500
+@@ -17,7 +17,7 @@ libvnccommon_la_SOURCES = $(HDRS) vncExt
+ 
+ libvnccommon_la_CPPFLAGS = -DVENDOR_RELEASE="$(VENDOR_RELEASE)" \
+ 	-DVENDOR_STRING="\"$(VENDOR_STRING)\"" -I$(TIGERVNC_SRCDIR)/common -UHAVE_CONFIG_H \
+-	-I$(TIGERVNC_SRCDIR)/unix/vncconfig $(XVNC_CPPFLAGS) -I$(includedir)/pixman-1 -I$(includedir)
++	-I$(TIGERVNC_SRCDIR)/unix/vncconfig $(XVNC_CPPFLAGS) -I$(top_srcdir)/include -I$(includedir)/pixman-1 -I$(includedir)
+ 
+ bin_PROGRAMS = Xvnc
+ 
+@@ -37,6 +37,8 @@ Xvnc_LDADD = $(XVNC_LIBS) libvnccommon.l
+ 
+ Xvnc_LDFLAGS = $(LD_EXPORT_SYMBOLS_FLAG)
+ 
++if XORG
++
+ libvnc_la_LTLIBRARIES = libvnc.la
+ libvnc_ladir = $(moduledir)/extensions
+ 
+@@ -52,6 +54,8 @@ libvnc_la_LDFLAGS = -module -avoid-versi
+ 
+ libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS)
+ 
++endif XORG
++
+ EXTRA_DIST = Xvnc.man
+ 
+ # C++ hacks
+--- origsrc/tigervnc/unix/xserver18.patch	2010-09-14 13:25:56.000000000 -0500
++++ src/tigervnc/unix/xserver18.patch	2010-09-16 23:55:06.128856200 -0500
+@@ -23,7 +23,7 @@ diff -up xserver/configure.ac.vnc xserve
+  
+ +dnl Xvnc DDX
+ +AC_SUBST([XVNC_CPPFLAGS], ["-DHAVE_DIX_CONFIG_H $XEXT_INC $FB_INC $MI_INC $RENDER_INC $RANDR_INC"])
+-+AC_SUBST([XVNC_LIBS], ["$FB_LIB $FIXES_LIB $XEXT_LIB $CONFIG_LIB $DBE_LIB $RECORD_LIB $GLX_LIBS $RANDR_LIB $RENDER_LIB $DAMAGE_LIB $MIEXT_DAMAGE_LIB $MIEXT_SHADOW_LIB $XI_LIB $XKB_LIB $XKB_STUB_LIB $COMPOSITE_LIB $MAIN_LIB"])
+++AC_SUBST([XVNC_LIBS], ["$FB_LIB $FIXES_LIB $XEXT_LIB $CONFIG_LIB $DBE_LIB $RECORD_LIB $GLX_LIBS $GLX_SYS_LIBS $RANDR_LIB $RENDER_LIB $DAMAGE_LIB $MIEXT_DAMAGE_LIB $MIEXT_SHADOW_LIB $XI_LIB $XKB_LIB $XKB_STUB_LIB $COMPOSITE_LIB $MAIN_LIB"])
+  
+  dnl Xnest DDX
+  

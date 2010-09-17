@@ -1,26 +1,17 @@
 inherit java
 
-xserver_pv=1.6.5
+xserver_pvr=1.8.2-1
 
 DESCRIPTION="X11 VNC client and servers"
 HOMEPAGE="http://www.tigervnc.com/"
-SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
-         http://xorg.freedesktop.org/releases/individual/xserver/xorg-server-${xserver_pv}.tar.bz2"
+#SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
+SRC_URI="mirror://gentoo/${P}.tar.bz2
+         http://cgit.freedesktop.org/~yselkowitz/xserver/snapshot/xserver-cygwin-${xserver_pvr}.tar.bz2"
+SRC_DIR=${PN}
 
 PATCH_URI="
-	http://cvs.fedoraproject.org/viewvc/rpms/tigervnc/devel/tigervnc-cookie.patch?view=co
-	http://cvs.fedoraproject.org/viewvc/rpms/tigervnc/devel/tigervnc10-compat.patch?view=co
-	http://cvs.fedoraproject.org/viewvc/rpms/tigervnc/devel/tigervnc10-rh510185.patch?view=co
-	http://cvs.fedoraproject.org/viewvc/rpms/tigervnc/devel/tigervnc10-rh516274.patch?view=co
-	http://cvs.fedoraproject.org/viewvc/rpms/tigervnc/devel/tigervnc10-rh524340.patch?view=co
-	1.0.0-vpath.patch
-	1.0.0-Xvnc-module.patch
 	1.0.0-tx-select.patch
-	1.0.0-java-classpath.patch
-	xserver15-glx.patch
-	xserver16-autotools.patch
-	xserver16-dix-libXfont14.patch
-	xserver16-os-cygwin.patch
+	20100914-Xvnc-build.patch
 "
 
 DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
@@ -28,32 +19,30 @@ DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
 CYGPORT_USE_UNSTABLE_API=1
 src_unpack_hook() {
 	cd unix
+	rm -fr xserver-tmp
 	mv xserver xserver-tmp
-	mv ../../xorg-server-${xserver_pv} xserver
+	mv ../../xserver-cygwin-${xserver_pvr} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cygpatch xserver${xserver_pv:0:1}${xserver_pv:2:1}.patch
+	cygpatch xserver${xserver_pvr:0:1}${xserver_pvr:2:1}.patch
 }
 
 src_compile() {
-	cd ${S}/unix
+	cd ${S}
 	cygautoreconf
 
 	cd ${S}/unix/xserver
 	cygautoreconf
-	rm -f include/*-config.h include/xorg-server.h
 
-	mkdir -p ${B}/unix
-	cd ${B}/unix
-	CYGCONF_SOURCE=${S}/unix
+	cd ${B}
 	cygconf --with-system-jpeg
 	cygmake
 
 	mkdir -p ${B}/java
 	lndirs ${S}/java ${B}/java
 	cd ${B}/java/src
-	${JAVAC} -classpath . $(find com/ -name '*.java')
-	${JAR} -cf VncViewer.jar -m com/tigervnc/vncviewer/MANIFEST.MF $(find com/tigervnc -name '*.class')
+	cygjavac -classpath . $(find com/ -name '*.java')
+	cygjar -cf VncViewer.jar -m com/tigervnc/vncviewer/MANIFEST.MF $(find com/tigervnc -name '*.class')
 
 	mkdir -p ${B}/media
 	lndirs ${S}/media ${B}/media
@@ -67,22 +56,13 @@ src_compile() {
 	mkdir -p ${B}/unix/xserver
 	cd ${B}/unix/xserver
 
-	# libXfont defines weak symbols which are overridden in dix/dixfonts.c,
-	# but current weak symbol handling requires static linking to work
-	# correctly.  But we can't ship a static-only libXfont because xfs
-	# requires it shared, otherwise you get multiple definitions during linking
-	# thanks to the xtrans code.
-	sed -e 's| -lXfont| /usr/lib/libXfont.a|' /usr/lib/pkgconfig/xfont.pc > ${T}/xfont.pc
-	export PKG_CONFIG_PATH=${T}
-
-	# necessary for all DDXs but only set if XWIN
-	CPPFLAGS+=" -DFD_SETSIZE=256"
-
 	CYGCONF_SOURCE=${S}/unix/xserver
 	cygconf \
+		--disable-dmx \
 		--disable-kdrive \
 		--disable-xephyr \
 		--disable-xfake \
+		--disable-xfbdev \
 		--disable-xnest \
 		--disable-xorg \
 		--disable-xquartz \
@@ -98,13 +78,13 @@ src_compile() {
 		--disable-xinerama \
 		--disable-xv \
 		--disable-xvmc \
-		--with-fontdir=/usr/share/fonts \
 		--with-log-dir=/var/log \
 		--with-serverconfig-path=/usr/lib/X11 \
 		--with-xkb-output=/var/lib/xkb \
 		"--with-os-name=Cygwin" \
 		"--with-os-vendor=Red Hat" \
 		"--with-builder-addr=cygwin-ports-general@lists.sourceforge.net" \
+		"--with-builderstring=Build Date: $(date +%Y-%m-%d)" \
 		"--with-vendor-name=The Cygwin Ports project" \
 		"--with-vendor-name-short=Cygwin Ports" \
 		"--with-vendor-web=http://www.cygwinports.org/"
@@ -113,16 +93,16 @@ src_compile() {
 }
 
 src_install() {
-	cd ${B}/unix
+	cd ${B}
 	cyginstall
 
 	cd ${B}/java/src
 	insinto /usr/share/vnc/classes
 	doins VncViewer.jar com/tigervnc/vncviewer/index.vnc
-	pushd ${D}/usr/share/vnc/classes
-	${JAR} -xf VncViewer.jar
-	rm -fr META-INF
-	popd
+#	pushd ${D}/usr/share/vnc/classes
+#	${JAR} -xf VncViewer.jar
+#	rm -fr META-INF
+#	popd
 
 	cd ${B}/media/icons
 	for i in 16 22 24 32 48 64
