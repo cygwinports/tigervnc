@@ -1,13 +1,11 @@
 inherit java
 
-xserver_pvr=1.8.2-1
+xserver_pvr=1.10.3-1
 
 DESCRIPTION="X11 VNC client and servers"
 HOMEPAGE="http://www.tigervnc.com/"
-#SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
-SRC_URI="mirror://gentoo/${P}.tar.bz2
-         http://cgit.freedesktop.org/~yselkowitz/xserver/snapshot/xserver-cygwin-${xserver_pvr}.tar.bz2"
-SRC_DIR=${PN}
+SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
+         http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${xserver_pvr}.tar.bz2"
 
 PATCH_URI="
 	1.0.0-tx-select.patch
@@ -24,7 +22,7 @@ src_unpack_hook() {
 	mv ../../xserver-cygwin-${xserver_pvr} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cygpatch xserver${xserver_pvr:0:1}${xserver_pvr:2:1}.patch
+	cygpatch xserver${xserver_pvr:0:1}${xserver_pvr:2:2}.patch
 }
 
 src_compile() {
@@ -58,6 +56,7 @@ src_compile() {
 
 	CYGCONF_SOURCE=${S}/unix/xserver
 	cygconf \
+		--disable-docs --disable-devel-docs \
 		--disable-dmx \
 		--disable-kdrive \
 		--disable-xephyr \
@@ -71,20 +70,24 @@ src_compile() {
 		--disable-xwin \
 		--disable-composite \
 		--disable-config-hal \
+		--disable-config-udev \
 		--disable-dri \
 		--disable-dri2 \
 		--disable-install-setuid \
+		--disable-windowswm \
 		--disable-xf86vidmode \
 		--disable-xinerama \
 		--disable-xv \
 		--disable-xvmc \
+		--disable-glx-tls \
+		--with-sha1=libgcrypt \
 		--with-log-dir=/var/log \
-		--with-serverconfig-path=/usr/lib/X11 \
+		--with-serverconfig-path=/usr/share/vnc \
 		--with-xkb-output=/var/lib/xkb \
-		"--with-os-name=Cygwin" \
-		"--with-os-vendor=Red Hat" \
 		"--with-builder-addr=cygwin-ports-general@lists.sourceforge.net" \
 		"--with-builderstring=Build Date: $(date +%Y-%m-%d)" \
+		"--with-os-name=Cygwin" \
+		"--with-os-vendor=Red Hat" \
 		"--with-vendor-name=The Cygwin Ports project" \
 		"--with-vendor-name-short=Cygwin Ports" \
 		"--with-vendor-web=http://www.cygwinports.org/"
@@ -115,8 +118,10 @@ src_install() {
 
 	make_desktop_entry vncviewer "TigerVNC Viewer" tigervnc "Network;RemoteAccess"
 
-	# avoid installing protocol.txt, Xserver.1, README.compiled
-	cd ${B}/unix/xserver/hw/vnc
+	cd ${B}/unix/xserver/
 	cyginstall
+
+	# conflicts with xorg-server
+	rm -f ${D}/usr/share/man/man1/Xserver.* ${D}/var/lib/xkb/README.compiled
 }
-DOCS="unix/README"
+DOCS="LICENCE.TXT README.txt"
