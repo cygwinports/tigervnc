@@ -1,6 +1,6 @@
 inherit java
 
-xserver_pvr=1.10.3-1
+xserver_pvr=1.11.4-5
 
 DESCRIPTION="X11 VNC client and servers"
 HOMEPAGE="http://www.tigervnc.com/"
@@ -8,9 +8,20 @@ SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
          http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${xserver_pvr}.tar.bz2"
 
 PATCH_URI="
+	fedora/tigervnc-102434.patch
+	fedora/tigervnc-cookie.patch
+	fedora/tigervnc-viewer-reparent.patch
+	fedora/tigervnc11-rh692048.patch
+	fedora/tigervnc11-xorg111.patch
 	1.0.0-tx-select.patch
 	20100914-Xvnc-build.patch
 "
+
+PKG_NAMES="${PN} ${PN}-server"
+PKG_HINTS="setup server"
+tigervnc_CONTENTS="etc/ usr/bin/vncviewer.exe usr/share/applications/ usr/share/doc/
+                   usr/share/icons/ usr/share/locale/ usr/share/man/man1/vncviewer.*"
+tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/share/man/ usr/share/vnc/"
 
 DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
 
@@ -22,7 +33,7 @@ src_unpack_hook() {
 	mv ../../xserver-cygwin-${xserver_pvr} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cygpatch xserver${xserver_pvr:0:1}${xserver_pvr:2:2}.patch
+	cygpatch xserver110.patch
 }
 
 src_compile() {
@@ -80,6 +91,7 @@ src_compile() {
 		--disable-xv \
 		--disable-xvmc \
 		--disable-glx-tls \
+		--disable-unit-tests \
 		--with-sha1=libgcrypt \
 		--with-log-dir=/var/log \
 		--with-serverconfig-path=/usr/share/vnc \
