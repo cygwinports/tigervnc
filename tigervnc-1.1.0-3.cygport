@@ -1,6 +1,6 @@
 inherit java
 
-xserver_pvr=1.11.4-5
+xserver_pvr=1.12.0-1
 
 DESCRIPTION="X11 VNC client and servers"
 HOMEPAGE="http://www.tigervnc.com/"
@@ -14,14 +14,16 @@ PATCH_URI="
 	fedora/tigervnc11-rh692048.patch
 	fedora/tigervnc11-xorg111.patch
 	1.0.0-tx-select.patch
-	20100914-Xvnc-build.patch
+	1.1.0-hw-vnc-build.patch
+	1.1.0-xorg112.patch
 "
 
 PKG_NAMES="${PN} ${PN}-server"
 PKG_HINTS="setup server"
 tigervnc_CONTENTS="etc/ usr/bin/vncviewer.exe usr/share/applications/ usr/share/doc/
                    usr/share/icons/ usr/share/locale/ usr/share/man/man1/vncviewer.*"
-tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/share/man/ usr/share/vnc/"
+tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/lib/xorg/
+                          usr/share/man/ usr/share/vnc/"
 
 DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
 
@@ -137,3 +139,5 @@ src_install() {
 	rm -f ${D}/usr/share/man/man1/Xserver.* ${D}/var/lib/xkb/README.compiled
 }
 DOCS="LICENCE.TXT README.txt"
+
+KEEP_LA_FILES="none"

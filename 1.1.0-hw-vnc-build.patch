@@ -1,0 +1,39 @@
+--- origsrc/tigervnc-1.1.0/unix/xserver/hw/vnc/Makefile.am	2012-03-27 21:27:43.902664100 -0500
++++ src/tigervnc-1.1.0/unix/xserver/hw/vnc/Makefile.am	2012-03-27 21:06:06.310472400 -0500
+@@ -5,7 +5,8 @@ RFB_LIB=$(LIB_DIR)/rfb/librfb.la
+ RDR_LIB=$(LIB_DIR)/rdr/librdr.la $(GNUTLS_LDFLAGS)
+ NETWORK_LIB=$(LIB_DIR)/network/libnetwork.la
+ XREGION_LIB=$(LIB_DIR)/Xregion/libXregion.la
+-COMMON_LIBS=$(NETWORK_LIB) $(RFB_LIB) $(RDR_LIB) $(XREGION_LIB)
++OS_LIB=$(LIB_DIR)/os/libos.la
++COMMON_LIBS=$(NETWORK_LIB) $(RFB_LIB) $(RDR_LIB) $(XREGION_LIB) $(OS_LIB)
+ 
+ noinst_LTLIBRARIES = libvnccommon.la
+ 
+@@ -17,7 +18,7 @@ libvnccommon_la_SOURCES = $(HDRS) vncExt
+ 
+ libvnccommon_la_CPPFLAGS = -DVENDOR_RELEASE="$(VENDOR_RELEASE)" \
+ 	-DVENDOR_STRING="\"$(VENDOR_STRING)\"" -I$(TIGERVNC_SRCDIR)/common -UHAVE_CONFIG_H \
+-	-I$(TIGERVNC_SRCDIR)/unix/vncconfig $(XVNC_CPPFLAGS) -I$(includedir)/pixman-1 -I$(includedir)
++	-I$(TIGERVNC_SRCDIR)/unix/vncconfig $(XVNC_CPPFLAGS) -I$(top_srcdir)/include -I$(includedir)/pixman-1 -I$(includedir)
+ 
+ bin_PROGRAMS = Xvnc
+ 
+@@ -46,14 +47,15 @@ libvnc_ladir = $(moduledir)/extensions
+ libvnc_la_SOURCES = xf86vncModule.cc
+ 
+ libvnc_la_CPPFLAGS = $(XVNC_CPPFLAGS) -I$(TIGERVNC_SRCDIR)/common -UHAVE_CONFIG_H \
++	-I$(top_srcdir)/include \
+ 	-I$(top_srcdir)/hw/xfree86/common \
+ 	-I$(top_srcdir)/hw/xfree86/os-support \
+ 	-I$(top_srcdir)/hw/xfree86/os-support/bus \
+ 	-I$(includedir)/pixman-1 -I$(includedir)
+ 
+-libvnc_la_LDFLAGS = -module -avoid-version
++libvnc_la_LDFLAGS = -module -avoid-version -no-undefined -lXorg.exe
+ 
+-libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS)
++libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(PIXMAN_LIBS)
+ 
+ EXTRA_DIST = Xvnc.man
+ 
