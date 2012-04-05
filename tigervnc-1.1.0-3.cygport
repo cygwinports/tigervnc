@@ -1,6 +1,6 @@
 inherit java
 
-xserver_pvr=1.12.0-1
+xserver_pvr=1.12.0-2
 
 DESCRIPTION="X11 VNC client and servers"
 HOMEPAGE="http://www.tigervnc.com/"
@@ -95,8 +95,8 @@ src_compile() {
 		--disable-glx-tls \
 		--disable-unit-tests \
 		--with-sha1=libgcrypt \
-		--with-log-dir=/var/log \
-		--with-serverconfig-path=/usr/share/vnc \
+		--with-log-dir=/var/log/xwin \
+		--with-serverconfig-path=/usr/lib/X11 \
 		--with-xkb-output=/var/lib/xkb \
 		"--with-builder-addr=cygwin-ports-general@lists.sourceforge.net" \
 		"--with-builderstring=Build Date: $(date +%Y-%m-%d)" \
@@ -135,8 +135,8 @@ src_install() {
 	cd ${B}/unix/xserver/
 	cyginstall
 
-	# conflicts with xorg-server
-	rm -f ${D}/usr/share/man/man1/Xserver.* ${D}/var/lib/xkb/README.compiled
+	# conflicts with xorg-server-common
+	rm -f ${D}/usr/lib/X11/protocol.txt ${D}/usr/share/man/man1/Xserver.* ${D}/var/lib/xkb/README.compiled
 }
 DOCS="LICENCE.TXT README.txt"
 
