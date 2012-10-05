@@ -1,68 +1,65 @@
-inherit java
+inherit cmake # java
 
-xserver_pvr=1.12.0-2
-
-DESCRIPTION="X11 VNC client and servers"
+NAME="tigervnc"
+VERSION=1.2.0
+XSERVER_VERSION=1.13.0-1
+RELEASE=1
+CATEGORY="X11"
+DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
+fourth generation of VNC. TigerVNC also includes features from the TightVNC
+and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
 HOMEPAGE="http://www.tigervnc.com/"
 SRC_URI="mirror://sourceforge/tigervnc/${P}.tar.gz
-         http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${xserver_pvr}.tar.bz2"
-
+         http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz
+         http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/xserver110.patch?id=d804e0e
+         http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-xorg111.patch?id=d804e0e
+         http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-xorg112.patch?id=d804e0e
+         http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-xorg113.patch?id=d804e0e
+"
 PATCH_URI="
-	fedora/tigervnc-102434.patch
-	fedora/tigervnc-cookie.patch
-	fedora/tigervnc-viewer-reparent.patch
-	fedora/tigervnc11-rh692048.patch
-	fedora/tigervnc11-xorg111.patch
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cookie.patch
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-gethomedir.patch
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-rh692048.patch
 	1.0.0-tx-select.patch
-	1.1.0-hw-vnc-build.patch
-	1.1.0-xorg112.patch
+	1.2.0-hw-vnc-build.patch
+	1.2.0-fltk-fontconfig.patch
+	1.2.0-install.patch
 "
 
 PKG_NAMES="${PN} ${PN}-server"
-PKG_HINTS="setup server"
+tigervnc_SUMMARY="X11 VNC client"
 tigervnc_CONTENTS="etc/ usr/bin/vncviewer.exe usr/share/applications/ usr/share/doc/
                    usr/share/icons/ usr/share/locale/ usr/share/man/man1/vncviewer.*"
-tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/lib/xorg/
-                          usr/share/man/ usr/share/vnc/"
+tigervnc_server_SUMMARY="X11 VNC server and Xorg extension"
+tigervnc_server_REQUIRES="dri-drivers util-linux xorg-server-common"
+tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/lib/xorg/ usr/share/man/"
 
-DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
+DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h *.png"
 
 CYGPORT_USE_UNSTABLE_API=1
 src_unpack_hook() {
 	cd unix
 	rm -fr xserver-tmp
 	mv xserver xserver-tmp
-	mv ../../xserver-cygwin-${xserver_pvr} xserver
+	mv ../../xserver-cygwin-${XSERVER_VERSION} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cygpatch xserver110.patch
+	cygpatch ../xserver110.patch
+	cygpatch ../tigervnc11-xorg111.patch
+	cygpatch ../tigervnc11-xorg112.patch
+	cygpatch ../tigervnc11-xorg113.patch
 }
 
 src_compile() {
-	cd ${S}
-	cygautoreconf
-
 	cd ${S}/unix/xserver
 	cygautoreconf
 
 	cd ${B}
-	cygconf --with-system-jpeg
+	cygcmake -DBUILD_JAVA=OFF
 	cygmake
 
-	mkdir -p ${B}/java
-	lndirs ${S}/java ${B}/java
-	cd ${B}/java/src
-	cygjavac -classpath . $(find com/ -name '*.java')
-	cygjar -cf VncViewer.jar -m com/tigervnc/vncviewer/MANIFEST.MF $(find com/tigervnc -name '*.class')
-
-	mkdir -p ${B}/media
-	lndirs ${S}/media ${B}/media
-	cd ${B}/media
-	check_prog_req rsvg-convert rsvg
-	for i in 16 22 24 32 48 64
-	do
-		rsvg-convert -f png -w $i -h $i -o icons/tigervnc_$i.png tigervnc.svg
-	done
+	cd ${S}/media
+	cygmake
 
 	mkdir -p ${B}/unix/xserver
 	cd ${B}/unix/xserver
@@ -78,7 +75,6 @@ src_compile() {
 		--disable-xnest \
 		--disable-xorg \
 		--disable-xquartz \
-		--disable-xsdl \
 		--disable-xvfb \
 		--disable-xwin \
 		--disable-composite \
@@ -113,16 +109,8 @@ src_install() {
 	cd ${B}
 	cyginstall
 
-	cd ${B}/java/src
-	insinto /usr/share/vnc/classes
-	doins VncViewer.jar com/tigervnc/vncviewer/index.vnc
-#	pushd ${D}/usr/share/vnc/classes
-#	${JAR} -xf VncViewer.jar
-#	rm -fr META-INF
-#	popd
-
-	cd ${B}/media/icons
-	for i in 16 22 24 32 48 64
+	cd ${S}/media/icons
+	for i in 16 22 24 32 48
 	do
 		insinto /usr/share/icons/hicolor/${i}x${i}/apps
 		newins tigervnc_$i.png tigervnc.png

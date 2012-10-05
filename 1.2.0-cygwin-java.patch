@@ -1,0 +1,25 @@
+--- origsrc/tigervnc-1.2.0/java/cmake/SignJar.cmake	2011-10-07 00:38:00.000000000 -0500
++++ src/tigervnc-1.2.0/java/cmake/SignJar.cmake	2012-09-03 17:50:21.959694400 -0500
+@@ -13,9 +13,10 @@ set(JARSIGNER "${Java_PATH}/jarsigner")
+ 
+ file(REMOVE tigervnc.keystore)
+ execute_process(COMMAND
++    echo -e 'TigerVNC\nThe TigerVNC Project\nSoftware Development\nAustin\nTexas\nUS'
++  COMMAND
+   ${KEYTOOL} -genkey -alias TigerVNC -keystore tigervnc.keystore -keyalg RSA
+     -storepass tigervnc -keypass tigervnc -validity 7300
+-    -dname "CN=TigerVNC, OU=Software Development, O=The TigerVNC Project, L=Austin, S=Texas, C=US"
+   RESULT_VARIABLE RESULT OUTPUT_VARIABLE OUTPUT ERROR_VARIABLE ERROR)
+ if(NOT RESULT EQUAL 0)
+   message(FATAL_ERROR "${KEYTOOL} failed:\n${ERROR}")
+--- origsrc/tigervnc-1.2.0/java/com/tigervnc/vncviewer/CConn.java	2012-02-13 06:34:17.000000000 -0600
++++ src/tigervnc-1.2.0/java/com/tigervnc/vncviewer/CConn.java	2012-09-02 23:16:13.343626000 -0500
+@@ -688,8 +688,6 @@ public class CConn extends CConnection
+ 
+   void showMenu(int x, int y) {
+     String os = System.getProperty("os.name");
+-    if (os.startsWith("Windows"))
+-      com.sun.java.swing.plaf.windows.WindowsLookAndFeel.setMnemonicHidden(false);
+     menu.show(desktop, x, y);
+   }
+ 
