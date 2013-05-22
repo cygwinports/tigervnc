@@ -11,16 +11,6 @@
          # Shared library extension matched, so extract the path and library
          # name, then add the result to the libtool dependency libs.  This
          # will always be an absolute path, because that's what CMake uses
---- origsrc/tigervnc-1.2.0/common/os/CMakeLists.txt	2011-10-12 15:00:55.000000000 -0500
-+++ src/tigervnc-1.2.0/common/os/CMakeLists.txt	2012-09-03 04:06:37.447688000 -0500
-@@ -6,3 +6,7 @@ add_library(os STATIC
-   w32tiger.c
-   os.cxx
-   tls.cxx)
-+
-+if(UNIX)
-+  libtool_create_control_file(os)
-+endif()
 --- origsrc/tigervnc-1.2.0/unix/xserver/hw/vnc/Makefile.am	2011-10-31 03:14:40.000000000 -0500
 +++ src/tigervnc-1.2.0/unix/xserver/hw/vnc/Makefile.am	2012-09-03 04:13:00.508216600 -0500
 @@ -54,9 +54,9 @@ libvnc_la_CPPFLAGS = $(XVNC_CPPFLAGS) -I

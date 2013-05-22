@@ -1,0 +1,11 @@
+--- origsrc/tigervnc/CMakeLists.txt	2013-04-25 02:55:46.000000000 -0500
++++ src/tigervnc/CMakeLists.txt	2013-05-22 14:44:16.063159600 -0500
+@@ -28,7 +28,7 @@ set(BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin
+ set(DATA_DIR "${CMAKE_INSTALL_PREFIX}/share")
+ set(MAN_DIR "${DATA_DIR}/man")
+ set(LOCALE_DIR "${DATA_DIR}/locale")
+-set(DOC_DIR "${CMAKE_INSTALL_PREFIX}/share/doc/${CMAKE_PROJECT_NAME}-${VERSION}")
++set(DOC_DIR "${CMAKE_INSTALL_PREFIX}/share/doc/${CMAKE_PROJECT_NAME}")
+ 
+ if(WIN32)
+ set(BIN_DIR "${CMAKE_INSTALL_PREFIX}")
