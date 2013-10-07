@@ -1,0 +1,16 @@
+vncExtInit.cc:1073:39: error: cast to pointer from integer of different size
+[-Werror=int-to-pointer-cast]
+
+(xVncExtApproveConnectReq.opaqueId is a CARD32)
+
+--- origsrc/tigervnc-1.3.0/unix/xserver/hw/vnc/vncExtInit.cc	2013-07-01 07:48:13.000000000 -0500
++++ src/tigervnc-1.3.0/unix/xserver/hw/vnc/vncExtInit.cc	2013-10-07 05:13:50.714391500 -0500
+@@ -1070,7 +1070,7 @@ static int ProcVncExtApproveConnect(Clie
+ {
+   REQUEST(xVncExtApproveConnectReq);
+   REQUEST_SIZE_MATCH(xVncExtApproveConnectReq);
+-  if (queryConnectId == (void*)stuff->opaqueId) {
++  if (queryConnectId == (void*)(long)stuff->opaqueId) {
+     for (int scr = 0; scr < screenInfo.numScreens; scr++) {
+       if (desktop[scr]) {
+         desktop[scr]->approveConnection(queryConnectId, stuff->approve,

@@ -1,25 +1,27 @@
-SVN_URI="https://tigervnc.svn.sourceforge.net/svnroot/tigervnc"
-SVN_BRANCH="branches/1_3"
-inherit cmake svn # java
+inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.2.90
-XSERVER_VERSION=1.14.1-1
+VERSION=1.3.0
+XSERVER_VERSION=1.14.3-2
 RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
 and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
 HOMEPAGE="http://www.tigervnc.com/"
-#SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.gz
+SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.bz2"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
 PATCH_URI="
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cookie.patch?h=f18
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-gethomedir.patch?h=f18
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-rh692048.patch?h=f18
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cookie.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-gethomedir.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-rh692048.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-setcursor-crash.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-getmaster.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-manpages.patch?h=f20
 	1.0.0-tx-select.patch
 	1.2.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
+	1.3.0-hw-vnc-compile.patch
 "
 
 PKG_NAMES="${NAME} ${NAME}-server"
