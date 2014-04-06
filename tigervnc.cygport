@@ -1,15 +1,15 @@
 inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.3.0
-XSERVER_VERSION=1.14.3-2
+VERSION=1.3.1
+XSERVER_VERSION=1.15.0-4
 RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
 and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
 HOMEPAGE="http://www.tigervnc.com/"
-SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.bz2"
+SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
 PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cookie.patch?h=f20
@@ -18,10 +18,14 @@ PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-setcursor-crash.patch?h=f20
 	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-getmaster.patch?h=f20
 	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-manpages.patch?h=f20
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-format-security.patch
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-zrle-crash.patch
+	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cursor.patch
 	1.0.0-tx-select.patch
 	1.2.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
 	1.3.0-hw-vnc-compile.patch
+	1.3.1-xserver115.patch
 "
 
 PKG_NAMES="${NAME} ${NAME}-server"
@@ -74,10 +78,10 @@ src_compile() {
 		--disable-config-udev \
 		--disable-dri \
 		--disable-dri2 \
+		--disable-dri3 \
 		--disable-install-setuid \
 		--disable-windowswm \
 		--disable-xf86vidmode \
-		--disable-xinerama \
 		--disable-xv \
 		--disable-xvmc \
 		--disable-glx-tls \
