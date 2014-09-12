@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.3.1
-XSERVER_VERSION=1.15.0-4
-RELEASE=1
+XSERVER_VERSION=1.16.0-1
+RELEASE=2
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
@@ -11,21 +11,27 @@ and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
 HOMEPAGE="http://www.tigervnc.com/"
 SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
+SRC_URI+=" fedora/tigervnc-xserver-1.14-rebased.patch"
 PATCH_URI="
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cookie.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-gethomedir.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc11-rh692048.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-setcursor-crash.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-getmaster.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-manpages.patch?h=f20
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-format-security.patch
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-zrle-crash.patch
-	http://pkgs.fedoraproject.org/cgit/tigervnc.git/plain/tigervnc-cursor.patch
+	fedora/tigervnc-cookie.patch
+	fedora/tigervnc11-gethomedir.patch
+	fedora/tigervnc11-rh692048.patch
+	fedora/tigervnc-setcursor-crash.patch
+	fedora/tigervnc-manpages.patch
+	fedora/tigervnc-getmaster.patch
+	fedora/tigervnc-shebang.patch
+	fedora/tigervnc-1.3.0-xserver-1.15.patch
+	fedora/tigervnc-format-security.patch
+	fedora/tigervnc-zrle-crash.patch
+	fedora/tigervnc-cursor.patch
+	fedora/tigervnc-xstartup.patch
+	fedora/tigervnc-1.3.1-xserver-1.16.patch
+	fedora/tigervnc-inputreset.patch
+	fedora/tigervnc-pointersync.patch
 	1.0.0-tx-select.patch
 	1.2.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
 	1.3.0-hw-vnc-compile.patch
-	1.3.1-xserver115.patch
 "
 
 PKG_NAMES="${NAME} ${NAME}-server"
@@ -46,7 +52,8 @@ src_unpack_hook() {
 	mv ../../xserver-cygwin-${XSERVER_VERSION} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cygpatch xserver114.patch
+	cd xserver
+	cygpatch ../../tigervnc-xserver-1.14-rebased.patch
 }
 
 src_compile() {
