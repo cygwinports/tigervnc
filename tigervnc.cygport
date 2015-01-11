@@ -1,46 +1,36 @@
 inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.3.1
-XSERVER_VERSION=1.16.0-1
-RELEASE=2
+VERSION=1.4.1
+XSERVER_VERSION=1.16.3-1
+RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
 and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
-HOMEPAGE="http://www.tigervnc.com/"
-SRC_URI="mirror://sourceforge/tigervnc/${NAME}-${VERSION}.tar.gz"
+HOMEPAGE="http://tigervnc.org/"
+SRC_URI="https://github.com/TigerVNC/tigervnc/archive/v${VERSION}/tigervnc-v${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
-SRC_URI+=" fedora/tigervnc-xserver-1.14-rebased.patch"
 PATCH_URI="
 	fedora/tigervnc-cookie.patch
 	fedora/tigervnc11-gethomedir.patch
-	fedora/tigervnc11-rh692048.patch
-	fedora/tigervnc-setcursor-crash.patch
-	fedora/tigervnc-manpages.patch
-	fedora/tigervnc-getmaster.patch
 	fedora/tigervnc-shebang.patch
-	fedora/tigervnc-1.3.0-xserver-1.15.patch
 	fedora/tigervnc-format-security.patch
-	fedora/tigervnc-zrle-crash.patch
-	fedora/tigervnc-cursor.patch
 	fedora/tigervnc-xstartup.patch
-	fedora/tigervnc-1.3.1-xserver-1.16.patch
-	fedora/tigervnc-inputreset.patch
-	fedora/tigervnc-pointersync.patch
 	1.0.0-tx-select.patch
 	1.2.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
-	1.3.0-hw-vnc-compile.patch
 "
 
-PKG_NAMES="${NAME} ${NAME}-server"
+PKG_NAMES="${NAME} ${NAME}-server ${NAME}-server-module"
 tigervnc_SUMMARY="X11 VNC client"
 tigervnc_CONTENTS="etc/ usr/bin/vncviewer.exe usr/share/applications/ usr/share/doc/
                    usr/share/icons/ usr/share/locale/ usr/share/man/man1/vncviewer.*"
-tigervnc_server_SUMMARY="X11 VNC server and Xorg extension"
+tigervnc_server_SUMMARY="X11 VNC server"
 tigervnc_server_REQUIRES="dri-drivers util-linux xorg-server-common"
-tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/lib/xorg/ usr/share/man/"
+tigervnc_server_CONTENTS="--exclude=vncviewer.* usr/bin/ usr/share/man/"
+tigervnc_server_module_SUMMARY="VNC extension for Xorg server"
+tigervnc_server_module_CONTENTS="usr/lib/xorg/modules/extensions/cygvnc.dll"
 
 DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
 
@@ -53,7 +43,7 @@ src_unpack_hook() {
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
 	cd xserver
-	cygpatch ../../tigervnc-xserver-1.14-rebased.patch
+	cygpatch ../xserver116.patch
 }
 
 src_compile() {
