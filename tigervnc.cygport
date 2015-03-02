@@ -1,8 +1,8 @@
 inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.4.1
-XSERVER_VERSION=1.16.3-1
+VERSION=1.4.3
+XSERVER_VERSION=1.17.1-2
 RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
@@ -11,12 +11,14 @@ and TurboVNC projects. TigerVNC supports recent versions of the X.Org X server."
 HOMEPAGE="http://tigervnc.org/"
 SRC_URI="https://github.com/TigerVNC/tigervnc/archive/v${VERSION}/tigervnc-v${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
+SRC_URI+=" fedora/tigervnc-xserver116-rebased.patch"
 PATCH_URI="
 	fedora/tigervnc-cookie.patch
-	fedora/tigervnc11-gethomedir.patch
+	fedora/tigervnc-libvnc-os.patch
 	fedora/tigervnc-shebang.patch
 	fedora/tigervnc-format-security.patch
 	fedora/tigervnc-xstartup.patch
+	fedora/tigervnc-xserver117.patch
 	1.0.0-tx-select.patch
 	1.2.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
@@ -43,7 +45,7 @@ src_unpack_hook() {
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
 	cd xserver
-	cygpatch ../xserver116.patch
+	cygpatch ../../tigervnc-xserver116-rebased.patch
 }
 
 src_compile() {
