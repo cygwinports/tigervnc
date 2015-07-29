@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.4.3
-XSERVER_VERSION=1.17.1-2
-RELEASE=1
+XSERVER_VERSION=1.17.2-1
+RELEASE=2
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
@@ -72,7 +72,6 @@ src_compile() {
 		--disable-xquartz \
 		--disable-xvfb \
 		--disable-xwin \
-		--disable-composite \
 		--disable-config-hal \
 		--disable-config-udev \
 		--disable-dri \
@@ -83,7 +82,7 @@ src_compile() {
 		--disable-xf86vidmode \
 		--disable-xv \
 		--disable-xvmc \
-		--disable-glx-tls \
+		--enable-glx-tls \
 		--disable-unit-tests \
 		--with-sha1=libnettle \
 		--with-log-dir=/var/log/xwin \
