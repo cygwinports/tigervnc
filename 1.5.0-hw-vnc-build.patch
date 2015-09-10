@@ -1,7 +1,7 @@
---- origsrc/tigervnc-1.2.0/cmake/Modules/CMakeMacroLibtoolFile.cmake	2011-08-08 21:26:30.000000000 -0500
-+++ src/tigervnc-1.2.0/cmake/Modules/CMakeMacroLibtoolFile.cmake	2012-09-03 04:01:45.313216000 -0500
-@@ -17,8 +17,8 @@ macro(libtool_create_control_file _targe
-   foreach(library ${${_target}_LIB_DEPENDS})
+--- origsrc/tigervnc-1.5.0/cmake/Modules/CMakeMacroLibtoolFile.cmake	2015-09-09 18:22:32.122894200 -0500
++++ src/tigervnc-1.5.0/cmake/Modules/CMakeMacroLibtoolFile.cmake	2015-09-09 18:20:29.381308000 -0500
+@@ -31,8 +31,8 @@ macro(libtool_create_control_file _targe
+   foreach(library ${target_libs})
      # Assume all entries are shared libs if platform-specific static library
      # extension is not matched.
 -    if("${library}" MATCHES "[^.+\\${CMAKE_STATIC_LIBRARY_SUFFIX}]$")
@@ -11,17 +11,24 @@
          # Shared library extension matched, so extract the path and library
          # name, then add the result to the libtool dependency libs.  This
          # will always be an absolute path, because that's what CMake uses
---- origsrc/tigervnc-1.2.0/unix/xserver/hw/vnc/Makefile.am	2011-10-31 03:14:40.000000000 -0500
-+++ src/tigervnc-1.2.0/unix/xserver/hw/vnc/Makefile.am	2012-09-03 04:13:00.508216600 -0500
-@@ -54,9 +54,9 @@ libvnc_la_CPPFLAGS = $(XVNC_CPPFLAGS) -I
+@@ -130,7 +130,6 @@ macro(libtool_create_control_file _targe
+   file(APPEND ${_laname} "shouldnotlink=no\n\n")
+   file(APPEND ${_laname} "dlopen=''\n")
+   file(APPEND ${_laname} "dlpreopen=''\n\n")
+-  file(APPEND ${_laname} "libdir='/usr/lib'\n\n")
+ 
+ 
+   # Add custom command to symlink the static library so that autotools finds
+--- origsrc/tigervnc-1.5.0/unix/xserver/hw/vnc/Makefile.am	2015-09-09 18:22:32.130395100 -0500
++++ src/tigervnc-1.5.0/unix/xserver/hw/vnc/Makefile.am	2015-09-09 18:02:34.652834800 -0500
+@@ -63,8 +63,8 @@ libvnc_la_CPPFLAGS = $(XVNC_CPPFLAGS) -I
  	-I$(top_srcdir)/include \
  	${XSERVERLIBS_CFLAGS} -I$(includedir)
  
--libvnc_la_LDFLAGS = -module -avoid-version
+-libvnc_la_LDFLAGS = -module -avoid-version -Wl,-z,now
 +libvnc_la_LDFLAGS = -module -avoid-version -no-undefined -lXorg.exe
  
 -libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(OS_LIB)
 +libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(OS_LIB) $(PIXMAN_LIBS)
  
  EXTRA_DIST = Xvnc.man
- 
