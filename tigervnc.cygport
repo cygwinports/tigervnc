@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.5.0
-XSERVER_VERSION=1.17.2-3
-RELEASE=1
+XSERVER_VERSION=1.17.4-1
+RELEASE=2
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is an advanced VNC implementation. It is based on the
 fourth generation of VNC. TigerVNC also includes features from the TightVNC
