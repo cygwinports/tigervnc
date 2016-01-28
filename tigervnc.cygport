@@ -1,9 +1,9 @@
 inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.5.0
-XSERVER_VERSION=1.17.4-1
-RELEASE=2
+VERSION=1.6.0
+XSERVER_VERSION=1.18.0-2
+RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is a high-performance implementation of VNC, a
 client/server application that allows users to launch and interact with
@@ -24,8 +24,13 @@ SRC_URI+=" fedora/tigervnc-xserver116-rebased.patch"
 PATCH_URI="
 	fedora/tigervnc-cookie.patch
 	fedora/tigervnc-libvnc-os.patch
+	fedora/tigervnc-inetd-nowait.patch
+	fedora/tigervnc-getmaster.patch
+	fedora/tigervnc-manpages.patch
 	fedora/tigervnc-shebang.patch
 	fedora/tigervnc-xstartup.patch
+	fedora/tigervnc-xserver118.patch
+	fedora/tigervnc-xorg118-QueueKeyboardEvents.patch
 	1.0.0-tx-select.patch
 	1.5.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
@@ -87,9 +92,9 @@ src_compile() {
 		--disable-install-setuid \
 		--disable-windowswm \
 		--disable-xf86vidmode \
+		--disable-xshmfence \
 		--disable-xv \
 		--disable-xvmc \
-		--enable-glx-tls \
 		--disable-unit-tests \
 		--with-default-font-path=catalogue:/etc/X11/fontpath.d,built-ins \
 		--with-sha1=libnettle \
