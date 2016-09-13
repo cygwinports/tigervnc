@@ -1,9 +1,9 @@
 inherit cmake # java
 
 NAME="tigervnc"
-VERSION=1.6.0
+VERSION=1.7.0
 XSERVER_VERSION=1.18.4-1
-RELEASE=3
+RELEASE=1
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is a high-performance implementation of VNC, a
 client/server application that allows users to launch and interact with
@@ -20,18 +20,12 @@ or even entire X sessions remotely but not your Windows desktop."
 HOMEPAGE="http://tigervnc.org/"
 SRC_URI="https://github.com/TigerVNC/tigervnc/archive/v${VERSION}/tigervnc-v${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
-SRC_URI+=" fedora/tigervnc-xserver116-rebased.patch"
 PATCH_URI="
-	fedora/tigervnc-cookie.patch
 	fedora/tigervnc-libvnc-os.patch
-	fedora/tigervnc11-rh692048.patch
-	fedora/tigervnc-inetd-nowait.patch
 	fedora/tigervnc-getmaster.patch
 	fedora/tigervnc-manpages.patch
 	fedora/tigervnc-shebang.patch
 	fedora/tigervnc-xstartup.patch
-	fedora/tigervnc-xserver118.patch
-	fedora/tigervnc-xorg118-QueueKeyboardEvents.patch
 	1.0.0-tx-select.patch
 	1.5.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
@@ -51,14 +45,17 @@ DIFF_EXCLUDES="Makefile.in aclocal.m4 configure fb.h fbrop.h pixman.h"
 
 CYGPORT_USE_UNSTABLE_API=1
 src_unpack_hook() {
-	cd unix
+	pushd unix
 	rm -fr xserver-tmp
 	mv xserver xserver-tmp
 	mv ../../xserver-cygwin-${XSERVER_VERSION} xserver
 	mv xserver-tmp/hw/vnc xserver/hw/
 	rm -fr xserver-tmp/
-	cd xserver
-	cygpatch ../../tigervnc-xserver116-rebased.patch
+	popd
+
+	pushd unix/xserver
+	cygpatch ../xserver118.patch
+	popd
 }
 
 src_compile() {
@@ -117,7 +114,7 @@ src_install() {
 	cd ${B}
 	cyginstall
 
-	make_desktop_entry vncviewer "TigerVNC Viewer" tigervnc "Network;RemoteAccess"
+#	make_desktop_entry vncviewer "TigerVNC Viewer" tigervnc "Network;RemoteAccess"
 
 	cd ${B}/unix/xserver/
 	cyginstall
