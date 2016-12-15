@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.7.0
-XSERVER_VERSION=1.18.4-1
-RELEASE=1
+XSERVER_VERSION=1.19.0-1
+RELEASE=2
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is a high-performance implementation of VNC, a
 client/server application that allows users to launch and interact with
@@ -20,7 +20,9 @@ or even entire X sessions remotely but not your Windows desktop."
 HOMEPAGE="http://tigervnc.org/"
 SRC_URI="https://github.com/TigerVNC/tigervnc/archive/v${VERSION}/tigervnc-v${VERSION}.tar.gz"
 SRC_URI+=" http://cgit.freedesktop.org/~jturney/xserver/snapshot/xserver-cygwin-${XSERVER_VERSION}.tar.xz"
+SRC_URI+=" fedora/tigervnc-xserver119.patch"
 PATCH_URI="
+	fedora/tigervnc-1.7.0-xserver119-support.patch
 	fedora/tigervnc-libvnc-os.patch
 	fedora/tigervnc-getmaster.patch
 	fedora/tigervnc-manpages.patch
@@ -54,7 +56,7 @@ src_unpack_hook() {
 	popd
 
 	pushd unix/xserver
-	cygpatch ../xserver118.patch
+	cygpatch ../../tigervnc-xserver119.patch
 	popd
 }
 
