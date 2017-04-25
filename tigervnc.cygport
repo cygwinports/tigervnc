@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.7.1
-XSERVER_VERSION=1.19.1-1
-RELEASE=1
+XSERVER_VERSION=1.19.3-2
+RELEASE=2
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is a high-performance implementation of VNC, a
 client/server application that allows users to launch and interact with
@@ -29,6 +29,14 @@ PATCH_URI="
 	fedora/tigervnc-manpages.patch
 	fedora/tigervnc-shebang.patch
 	fedora/tigervnc-xstartup.patch
+	fedora/tigervnc-delete-underlying-ssecurity.patch
+	fedora/tigervnc-prevent-double-free-by-crafted-fences.patch
+	fedora/tigervnc-limit-max-username-password-size-in-ssecurityplain.patch
+	fedora/tigervnc-fix-crash-from-integer-overflow.patch
+	fedora/tigervnc-prevent-leak-of-securityserver-and-clientserver.patch
+	fedora/tigervnc-avoid-leaking-shared-memory.patch
+	fedora/tigervnc-be-more-restrictive-with-shared-memory-mode-bits.patch
+	fedora/tigervnc-fix-checknowait-logic-in-ssecurityplain.patch
 	1.0.0-tx-select.patch
 	1.5.0-hw-vnc-build.patch
 	1.2.90-docdir.patch
