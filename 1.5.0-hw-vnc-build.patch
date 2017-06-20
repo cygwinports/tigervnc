@@ -28,7 +28,7 @@
 -libvnc_la_LDFLAGS = -module -avoid-version -Wl,-z,now
 +libvnc_la_LDFLAGS = -module -avoid-version -no-undefined -lXorg.exe
  
--libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(OS_LIB)
-+libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(OS_LIB) $(PIXMAN_LIBS)
+-libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS)
++libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(PIXMAN_LIBS)
  
  EXTRA_DIST = Xvnc.man
