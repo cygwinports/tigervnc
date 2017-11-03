@@ -26,9 +26,9 @@
  	${XSERVERLIBS_CFLAGS} -I$(includedir)
  
 -libvnc_la_LDFLAGS = -module -avoid-version -Wl,-z,now
-+libvnc_la_LDFLAGS = -module -avoid-version -no-undefined -lXorg.exe
++libvnc_la_LDFLAGS = -module -avoid-version -no-undefined
  
 -libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS)
-+libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(PIXMAN_LIBS)
++libvnc_la_LIBADD = libvnccommon.la $(COMMON_LIBS) $(PIXMAN_LIBS) -lXorg.exe
  
  EXTRA_DIST = Xvnc.man
