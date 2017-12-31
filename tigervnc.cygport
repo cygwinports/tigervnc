@@ -2,8 +2,8 @@ inherit cmake # java
 
 NAME="tigervnc"
 VERSION=1.8.0
-XSERVER_VERSION=1.19.5-1
-RELEASE=2
+XSERVER_VERSION=1.19.6-1
+RELEASE=3
 CATEGORY="X11"
 DESCRIPTION="TigerVNC is a high-performance implementation of VNC, a
 client/server application that allows users to launch and interact with
